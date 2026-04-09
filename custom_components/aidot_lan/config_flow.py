@@ -30,6 +30,12 @@ DATA_SCHEMA = vol.Schema(
     }
 )
 
+REAUTH_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_PASSWORD): str,
+    }
+)
+
 
 class AidotLanConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle AiDot LAN config flow — same cloud auth as upstream, LAN P2P underneath."""
@@ -70,4 +76,50 @@ class AidotLanConfigFlow(ConfigFlow, domain=DOMAIN):
                     "cloud state is used as a fallback."
                 ),
             },
+        )
+
+    async def async_step_reauth(self, entry: ConfigFlowResult) -> ConfigFlowResult:
+        """Triggered when reauthentication is needed — show reauth confirmation."""
+        return self.async_show_form(
+            step_id="reauth_confirm",
+            data_schema=REAUTH_SCHEMA,
+            description_placeholders={
+                "username": entry.data[CONF_LOGIN_INFO].get("username", ""),
+            },
+        )
+
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Re-authenticate with fresh credentials after token expiry."""
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            entry = self.hass.config_entries.async_get_entry(
+                self.context["entry_id"]
+            )
+            if entry is None:
+                return self.async_abort(reason="entry_not_found")
+
+            login_info = entry.data[CONF_LOGIN_INFO]
+            client = AidotClient(
+                session=async_get_clientsession(self.hass),
+                username=login_info.get("username"),
+                password=user_input[CONF_PASSWORD],
+            )
+            try:
+                new_login_info = await client.async_post_login()
+            except AidotUserOrPassIncorrect:
+                errors["base"] = "invalid_auth"
+
+            if not errors:
+                self.hass.config_entries.async_update_entry(
+                    entry,
+                    data={CONF_LOGIN_INFO: new_login_info},
+                )
+                return self.async_abort(reason="reauth_successful")
+
+        return self.async_show_form(
+            step_id="reauth_confirm",
+            data_schema=REAUTH_SCHEMA,
+            errors=errors,
         )

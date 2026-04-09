@@ -1,12 +1,23 @@
 {
   "config": {
     "abort": {
-      "already_configured": "This AiDot account is already configured in this region."
+      "already_configured": "This AiDot account is already configured in this region.",
+      "entry_not_found": "Configuration entry not found.",
+      "reauth_successful": "Reauthentication successful."
     },
     "error": {
       "invalid_auth": "Authentication failed. Please verify your username, password, and the country code matches what you used in the AiDot app."
     },
     "step": {
+      "reauth_confirm": {
+        "data": {
+          "password": "Password"
+        },
+        "data_description": {
+          "password": "Re-enter your AiDot account password to refresh the session token."
+        },
+        "description": "Re-authenticate as {username} to refresh your session. Your devices will remain available."
+      },
       "user": {
         "data": {
           "country_code": "Country",
@@ -15,7 +26,7 @@
         },
         "data_description": {
           "country_code": "The country selected when you created your AiDot account.",
-          "password": "The password used to log into the AiDot app.",
+          "password": "The password for your AiDot account.",
           "username": "The email or username used to log into the AiDot app."
         },
         "description": "Enter your AiDot cloud account credentials. Devices are controlled locally via LAN P2P when reachable; cloud state is used as a fallback."

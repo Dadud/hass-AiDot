@@ -87,10 +87,11 @@ rules:
     status: done
     comment: DataUpdateCoordinator handles locking; per-device coordinators are independent.
   reauthentication-flow:
-    status: todo
+    status: done
     comment: |
-      Token refresh is handled internally via token_fresh_cb on startup.
-      No dedicated reauth config flow added yet.
+      async_step_reauth triggers on ConfigEntryAuthFailed from coordinator;
+      async_step_reauth_confirm validates credentials and updates the
+      config entry with fresh login_info from async_post_login().
   test-coverage:
     status: todo
     comment: No formal tests added yet.
