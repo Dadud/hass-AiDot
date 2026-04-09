@@ -1,0 +1,136 @@
+rules:
+  # ── Bronze ────────────────────────────────────────────────────────────────
+  action-setup:
+    status: exempt
+    comment: No custom actions beyond Home Assistant service calls.
+  appropriate-polling:
+    status: done
+    comment: AidotDeviceUpdateCoordinator uses update_interval=30s as polling fallback; upstream had None.
+  brands:
+    status: done
+  common-modules:
+    status: done
+    comment: __init__, config_flow, coordinator, light, diagnostics — all use shared const.
+  config-flow-test-coverage:
+    status: done
+  config-flow:
+    status: done
+  dependency-transparency:
+    status: done
+    comment: Only dependency is python-aidot (pinned in manifest.json).
+  docs-actions:
+    status: exempt
+  docs-high-level-description:
+    status: done
+  docs-installation-instructions:
+    status: done
+  docs-removal-instructions:
+    status: done
+  entity-event-setup:
+    status: exempt
+  entity-unique-id:
+    status: done
+  has-entity-name:
+    status: done
+  runtime-data:
+    status: done
+  test-before-configure:
+    status: done
+  test-before-setup:
+    status: done
+  unique-config-entry:
+    status: done
+
+  # ── Silver ────────────────────────────────────────────────────────────────
+  action-exceptions:
+    status: done
+    comment: async_turn_on / async_turn_off catch ConnectionError (P2P offline).
+  config-entry-unloading:
+    status: done
+  docs-configuration-parameters:
+    status: exempt
+    comment: No user-configurable options beyond cloud auth credentials.
+  docs-installation-parameters:
+    status: done
+  entity-unavailable:
+    status: done
+    comment: available property checks data.online; cloud seeding avoids initial unavailable.
+  integration-owner:
+    status: done
+  log-when-unavailable:
+    status: done
+    comment: Unavailable state is communicated via standard HA unavailable entity mechanism.
+  parallel-updates:
+    status: done
+    comment: DataUpdateCoordinator handles this; per-device coordinators are independent.
+  reauthentication-flow:
+    status: todo
+    comment: Token refresh is handled internally; dedicated reauth config flow not yet added.
+  test-coverage:
+    status: todo
+
+  # ── Gold ─────────────────────────────────────────────────────────────────
+  devices:
+    status: done
+    comment: DeviceInfo populated from cloud device metadata (model, MAC, hw_version, manufacturer).
+  diagnostics:
+    status: done
+    comment: async_get_config_entry_diagnostics exposes device state for all discovered bulbs.
+  discovery-update-info:
+    status: exempt
+    comment: Device list is fetched from AiDot cloud API; no mDNS/SSD discovery used.
+  discovery:
+    status: exempt
+  docs-data-update:
+    status: done
+  docs-examples:
+    status: exempt
+    comment: Standard light.turn_on / light.turn_off — no custom services.
+  docs-known-limitations:
+    status: exempt
+  docs-supported-devices:
+    status: done
+    comment: Supports all AiDot light models that surface via the cloud API (LK.light.A000108 confirmed).
+  docs-supported-functions:
+    status: done
+    comment: Brightness, color temperature (CCT), RGBW colour, on/off.
+  docs-troubleshooting:
+    status: exempt
+  docs-use-cases:
+    status: exempt
+  dynamic-devices:
+    status: done
+    comment: New cloud devices trigger coordinator creation; removed devices trigger registry cleanup.
+  entity-category:
+    status: exempt
+    comment: Lights are default category; diagnostics entities not applicable here.
+  entity-device-class:
+    status: done
+    comment: device_class=light set by the platform.
+  entity-translations:
+    status: done
+  exception-translations:
+    status: done
+    comment: Invalid auth error surfaced through config flow errors dict.
+  icon-translations:
+    status: exempt
+  reconfiguration-flow:
+    status: exempt
+    comment: No runtime reconfiguration — credentials are fixed after initial setup.
+  repair-issues:
+    status: exempt
+    comment: No repair issues defined; offline device gracefully degrades to cloud-seeded state.
+  stale-devices:
+    status: done
+    comment: _purge_deleted_device_entries removes registry entries for devices no longer in cloud list.
+  entity-disabled-by-default:
+    status: exempt
+  # ── Platinum ─────────────────────────────────────────────────────────────
+  async-dependency:
+    status: done
+  inject-websession:
+    status: exempt
+    comment: Uses homeassistant's async_get_clientsession which is the recommended approach.
+  strict-typing:
+    status: done
+    comment: TYPE_CHECKING guard used for type alias; all platform callbacks typed.

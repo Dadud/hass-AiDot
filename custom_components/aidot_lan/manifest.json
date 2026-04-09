@@ -1,0 +1,18 @@
+{
+  "domain": "aidot_lan",
+  "name": "AiDot LAN",
+  "codeowners": [
+    "@s1eedz",
+    "@HongBryan"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/YuvDwi/Steve",
+  "issue_tracker": "https://github.com/YuvDwi/Steve/issues",
+  "integration_type": "hub",
+  "iot_class": "local_polling",
+  "quality_scale": "gold",
+  "requirements": [
+    "python-aidot==0.3.51"
+  ],
+  "version": "1.2.0"
+}
