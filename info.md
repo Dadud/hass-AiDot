@@ -1,6 +1,10 @@
 # AiDot LAN — Integration for Home Assistant
 
-Integrates [AiDot smart lights](https://www.aidot.com) with Home Assistant via LAN P2P with cloud-seeded fallback.
+> **Fork of [AiDot-Development-Team/hass-AiDot](https://github.com/AiDot-Development-Team/hass-AiDot) with LAN/P2P reliability improvements, cloud-seeded fallback, and Platinum quality certification.**
+
+## About
+
+This fork was created to solve two persistent problems with the upstream integration: entities showing `unavailable` when P2P is blocked by VLAN/firewall, and silent data loss when P2P status overwrites valid cloud state. It also brings the integration up to Home Assistant's Platinum quality standard.
 
 ## Features
 
@@ -8,6 +12,7 @@ Integrates [AiDot smart lights](https://www.aidot.com) with Home Assistant via L
 - **Cloud-seeded startup** — entities become available immediately instead of stuck in "unavailable"
 - **Graceful degradation** — if P2P is blocked (VLAN/firewall), service calls update state optimistically and 30 s polling keeps things fresh
 - **Multi-device** — all AiDot lights in your AiDot account are auto-discovered
+- **Reauthentication flow** — proper Platinum-quality reauth when tokens expire
 
 ## Supported devices
 

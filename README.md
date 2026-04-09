@@ -1,10 +1,18 @@
 # AiDot LAN — Home Assistant Integration
 
-> **Fork of [AiDot-Development-Team/hass-AiDot](https://github.com/AiDot-Development-Team/hass-AiDot) (v1.1.1) with LAN/P2P reliability improvements and cloud-seeded fallback.**
+> **Fork of [AiDot-Development-Team/hass-AiDot](https://github.com/AiDot-Development-Team/hass-AiDot) (v1.1.1) with LAN/P2P reliability improvements, cloud-seeded fallback, and Platinum quality certification.**
 
 [![HA Integration Type: hub](https://img.shields.io/badge/integration_type-hub-blue?style=flat-square)](https://developers.home-assistant.io/docs/quality_scale)
-[![Quality Scale: Gold](https://img.shields.io/badge/quality_scale-gold-yellow?style=flat-square)](https://developers.home-assistant.io/docs/quality_scale)
-[![Version: 1.2.0](https://img.shields.io/badge/version-1.2.0-green?style=flat-square)](https://github.com/YuvDwi/Steve)
+[![Quality Scale: Platinum](https://img.shields.io/badge/quality_scale-platinum-green?style=flat-square)](https://developers.home-assistant.io/docs/quality_scale)
+[![Version: 1.3.0](https://img.shields.io/badge/version-1.3.0-green?style=flat-square)](https://github.com/Dadud/hass-AiDot)
+
+## About this fork
+
+This fork was created to solve two persistent problems with the upstream integration: entities showing `unavailable` when P2P is blocked by VLAN/firewall, and silent data loss when P2P status overwrites valid cloud state. It also brings the integration up to Home Assistant's Platinum quality standard.
+
+**Original development:** [AiDot-Development-Team/hass-AiDot](https://github.com/AiDot-Development-Team/hass-AiDot) (v1.1.1) by [@s1eedz](https://github.com/s1eedz) and [@HongBryan](https://github.com/HongBryan).
+
+**This fork adds:** cloud-seeded initial state, P2P data overwrite guard, 30 s polling fallback, optimistic service calls, a proper reauthentication flow, and a full pytest test suite.
 
 ## What this fork fixes
 
@@ -26,7 +34,7 @@
 ### Option A — HACS (recommended)
 
 1. Add this repository to HACS:
-   **HACS → Integrations → ⋯ → Custom repositories → `https://github.com/YuvDwi/Steve` → Category: Integration**
+   **HACS → Integrations → ⋯ → Custom repositories → `https://github.com/Dadud/hass-AiDot` → Category: Integration**
 2. Restart Home Assistant
 3. Add **AiDot LAN** from **Settings → Devices & Services → Add Integration**
 
@@ -70,6 +78,7 @@ Copy `custom_components/aidot_lan/` into your Home Assistant's `config/custom_co
 | Multiple devices | ✅ — auto-discovered from cloud |
 | Device registry cleanup | ✅ — stale entries removed |
 | Diagnostics | ✅ — `configuration → diagnostics` for each device |
+| Reauthentication flow | ✅ — password-only reauth when token expires |
 
 ## Network requirements
 
@@ -92,19 +101,14 @@ nc -zv <bulb-ip> 10000
 
 If this times out, the P2P path is blocked — check VLAN isolation, firewall rules, or AP/client isolation on your router.
 
-### Token / authentication errors
-
-Re-add the integration — tokens expire periodically and the integration handles refresh automatically on startup, but a full re-setup may be needed if credentials have changed.
-
 ## Known limitations
 
 - **Cloud auth required at setup time** — credentials are used once to obtain a session token; subsequent operation is local.
-- **No dedicated reauthentication flow** — if the token becomes invalid weeks later, re-add the integration.
 - **IoT class listed as `local_polling`** — in practice the integration uses both push (P2P) and polling (30 s fallback).
 
 ## Filing issues
 
-Report bugs at [github.com/YuvDwi/Steve](https://github.com/YuvDwi/Steve/issues).
+Report bugs at [github.com/Dadud/hass-AiDot/issues](https://github.com/Dadud/hass-AiDot/issues).
 
 ## Credits
 
