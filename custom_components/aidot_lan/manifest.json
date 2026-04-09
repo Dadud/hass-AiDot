@@ -2,15 +2,14 @@
   "domain": "aidot_lan",
   "name": "AiDot LAN",
   "codeowners": [
-    "@s1eedz",
-    "@HongBryan"
+    "@Dadud"
   ],
   "config_flow": true,
-  "documentation": "https://github.com/YuvDwi/Steve",
-  "issue_tracker": "https://github.com/YuvDwi/Steve/issues",
+  "documentation": "https://github.com/Dadud/hass-AiDot",
+  "issue_tracker": "https://github.com/Dadud/hass-AiDot/issues",
   "integration_type": "hub",
   "iot_class": "local_polling",
-  "quality_scale": "gold",
+  "quality_scale": "platinum",
   "requirements": [
     "python-aidot==0.3.51"
   ],
