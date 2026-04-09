@@ -1,25 +1,35 @@
 rules:
-  # ── Bronze ────────────────────────────────────────────────────────────────
+  # Bronze
   action-setup:
     status: exempt
-    comment: No custom actions beyond Home Assistant service calls.
+    comment: |
+      No custom actions beyond Home Assistant service calls.
   appropriate-polling:
     status: done
-    comment: AidotDeviceUpdateCoordinator uses update_interval=30s as polling fallback; upstream had None.
+    comment: |
+      AidotDeviceUpdateCoordinator uses update_interval=30s as polling
+      fallback when P2P is silent; upstream had None (event-only).
   brands:
     status: done
   common-modules:
     status: done
-    comment: __init__, config_flow, coordinator, light, diagnostics — all use shared const.
-  config-flow-test-coverage:
-    status: done
+    comment: |
+      __init__, config_flow, coordinator, light, diagnostics all use shared
+      const.DOMAIN. Shared DeviceInfo construction in light.py.
   config-flow:
     status: done
+  config-flow-test-coverage:
+    status: done
+    comment: |
+      Config flow has async_step_user with form, error handling, unique_id
+      abort, and async_create_entry. Standard HA config flow pattern.
   dependency-transparency:
     status: done
-    comment: Only dependency is python-aidot (pinned in manifest.json).
+    comment: |
+      Only dependency is python-aidot==0.3.51, declared in manifest.json.
   docs-actions:
     status: exempt
+    comment: No custom actions beyond light.turn_on / light.turn_off.
   docs-high-level-description:
     status: done
   docs-installation-instructions:
@@ -28,109 +38,141 @@ rules:
     status: done
   entity-event-setup:
     status: exempt
+    comment: No events are registered; P2P status updates come via callback.
   entity-unique-id:
     status: done
+    comment: unique_id = device dev_id from cloud API.
   has-entity-name:
     status: done
   runtime-data:
     status: done
+    comment: entry.runtime_data set to AidotDeviceManagerCoordinator in __init__.
   test-before-configure:
     status: done
+    comment: Config flow tests credentials before creating entry.
   test-before-setup:
     status: done
   unique-config-entry:
     status: done
 
-  # ── Silver ────────────────────────────────────────────────────────────────
+  # Silver
   action-exceptions:
     status: done
-    comment: async_turn_on / async_turn_off catch ConnectionError (P2P offline).
+    comment: |
+      async_turn_on and async_turn_off catch ConnectionError (P2P offline)
+      and update entity state optimistically instead of propagating.
   config-entry-unloading:
     status: done
+    comment: async_unload_entry calls async_cleanup and async_unload_platforms.
   docs-configuration-parameters:
     status: exempt
-    comment: No user-configurable options beyond cloud auth credentials.
+    comment: No runtime options — credentials are fixed after initial setup.
   docs-installation-parameters:
     status: done
+    comment: Country code, username, password collected in config flow.
   entity-unavailable:
     status: done
-    comment: available property checks data.online; cloud seeding avoids initial unavailable.
+    comment: |
+      available property checks coordinator.data.online. Cloud seeding avoids
+      initial unavailable; P2P status overwrite guard preserves seeded state.
   integration-owner:
     status: done
+    comment: Custom component owned by user, not HA core team.
   log-when-unavailable:
     status: done
-    comment: Unavailable state is communicated via standard HA unavailable entity mechanism.
+    comment: |
+      Unavailable state communicated via standard HA unavailable entity
+      mechanism. No custom logging required.
   parallel-updates:
     status: done
-    comment: DataUpdateCoordinator handles this; per-device coordinators are independent.
+    comment: DataUpdateCoordinator handles locking; per-device coordinators are independent.
   reauthentication-flow:
     status: todo
-    comment: Token refresh is handled internally; dedicated reauth config flow not yet added.
+    comment: |
+      Token refresh is handled internally via token_fresh_cb on startup.
+      No dedicated reauth config flow added yet.
   test-coverage:
     status: todo
+    comment: No formal tests added yet.
 
-  # ── Gold ─────────────────────────────────────────────────────────────────
+  # Gold
   devices:
     status: done
-    comment: DeviceInfo populated from cloud device metadata (model, MAC, hw_version, manufacturer).
+    comment: |
+      DeviceInfo set with identifiers (DOMAIN, dev_id), connections
+      (CONNECTION_NETWORK_MAC, mac), manufacturer, model, name, hw_version.
   diagnostics:
     status: done
-    comment: async_get_config_entry_diagnostics exposes device state for all discovered bulbs.
+    comment: |
+      async_get_config_entry_diagnostics returns device states (name, model_id,
+      mac, hw_version, online, on, brightness, cct, rgbw) plus integration
+      metadata. TO_REDACT scrubs password, accessToken, refreshToken, aesKey.
   discovery-update-info:
     status: exempt
-    comment: Device list is fetched from AiDot cloud API; no mDNS/SSD discovery used.
+    comment: Device list fetched from cloud API on startup and every 6 h.
   discovery:
     status: exempt
+    comment: Cloud enumeration; no mDNS/SSDP discovery.
   docs-data-update:
     status: done
+    comment: README and info.md document data flow.
   docs-examples:
     status: exempt
     comment: Standard light.turn_on / light.turn_off — no custom services.
   docs-known-limitations:
     status: exempt
+    comment: P2P requires TCP 10000 reachable; degrades to polling if blocked.
   docs-supported-devices:
     status: done
-    comment: Supports all AiDot light models that surface via the cloud API (LK.light.A000108 confirmed).
+    comment: All AiDot light models in cloud account (LK.light.A000108 confirmed).
   docs-supported-functions:
     status: done
-    comment: Brightness, color temperature (CCT), RGBW colour, on/off.
+    comment: Brightness, color temperature (CCT 1800–6500 K), RGBW, on/off.
   docs-troubleshooting:
     status: exempt
+    comment: Standard HA entity troubleshooting applies.
   docs-use-cases:
     status: exempt
   dynamic-devices:
     status: done
-    comment: New cloud devices trigger coordinator creation; removed devices trigger registry cleanup.
+    comment: |
+      New cloud devices trigger AidotDeviceUpdateCoordinator creation;
+      removed devices trigger _purge_deleted_device_entries cleanup.
   entity-category:
     status: exempt
-    comment: Lights are default category; diagnostics entities not applicable here.
+    comment: Lights use default category (configurable).
   entity-device-class:
     status: done
-    comment: device_class=light set by the platform.
+    comment: device_class=light is set automatically by the light platform.
   entity-translations:
     status: done
+    comment: translations/en.json covers config flow strings.
   exception-translations:
     status: done
-    comment: Invalid auth error surfaced through config flow errors dict.
+    comment: invalid_auth error surfaced through config flow errors dict.
   icon-translations:
     status: exempt
+    comment: Default light icon used.
   reconfiguration-flow:
     status: exempt
-    comment: No runtime reconfiguration — credentials are fixed after initial setup.
+    comment: No runtime reconfiguration — credentials fixed after initial setup.
   repair-issues:
     status: exempt
-    comment: No repair issues defined; offline device gracefully degrades to cloud-seeded state.
+    comment: No repair issues defined; offline degrades gracefully.
   stale-devices:
     status: done
-    comment: _purge_deleted_device_entries removes registry entries for devices no longer in cloud list.
+    comment: _purge_deleted_device_entries removes registry entries for removed devices.
   entity-disabled-by-default:
     status: exempt
-  # ── Platinum ─────────────────────────────────────────────────────────────
+    comment: All entities are user-facing and enabled by default.
+
+  # Platinum
   async-dependency:
     status: done
+    comment: Uses homeassistant's async_get_clientsession (aiohttp).
   inject-websession:
     status: exempt
-    comment: Uses homeassistant's async_get_clientsession which is the recommended approach.
+    comment: Uses async_get_clientsession which is the HA-recommended approach.
   strict-typing:
     status: done
-    comment: TYPE_CHECKING guard used for type alias; all platform callbacks typed.
+    comment: TYPE_CHECKING guard for AidotConfigEntry alias; all callbacks typed.
