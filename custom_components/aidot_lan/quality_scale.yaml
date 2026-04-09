@@ -93,8 +93,12 @@ rules:
       async_step_reauth_confirm validates credentials and updates the
       config entry with fresh login_info from async_post_login().
   test-coverage:
-    status: todo
-    comment: No formal tests added yet.
+    status: done
+    comment: |
+      tests/ covers config flow (user flow, invalid auth, reauth success/failure),
+      light entity (unique_id, availability, turn_on/turn_off with optimistic
+      updates and ConnectionError handling), and coordinator
+      (AidotAuthFailed -> ConfigEntryAuthFailed propagation, cloud seeding).
 
   # Gold
   devices:
